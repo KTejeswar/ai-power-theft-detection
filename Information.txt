@@ -1,0 +1,23 @@
+This is an AI-Based Power Theft Detection in Electrical Systems Using Machine Learning.
+
+The main objective of this project is to detect electricity theft automatically using Artificial Intelligence and Machine Learning. Power theft is a major problem faced by electricity distribution companies, causing significant financial losses and reducing operational efficiency. Traditional methods such as manual inspections are time-consuming, expensive, and often inaccurate.
+
+To solve this problem, our system analyzes electrical consumption data and predicts whether a consumer is using electricity normally or if there is a possibility of power theft.
+
+The project uses machine learning algorithms including Support Vector Machine, Random Forest, and XGBoost. Among these, XGBoost is selected as the final model because it provides the highest accuracy and better prediction performance.
+
+The system works by collecting electrical parameters such as voltage, current, power factor, energy consumption, and meter readings. These values are processed and sent to the machine learning model. The model compares the incoming data with patterns learned during training and predicts whether the behavior is normal or suspicious.
+
+The technology stack for this project consists of React for the frontend, FastAPI for the backend, XGBoost and Scikit-Learn for machine learning, and MySQL for database management. The frontend provides an interactive dashboard, while the backend handles data processing, prediction requests, and communication with the machine learning model.
+
+The main features of the project include user authentication, consumer management, real-time theft prediction, risk score generation, alert management, and analytical dashboards. The dashboard displays total consumers, theft cases, active alerts, and consumption trends. If suspicious activity is detected, the system generates an alert and assigns a risk score indicating the likelihood of power theft.
+
+The database stores user information, consumer details, meter readings, prediction results, and alert history. This allows utility operators to monitor consumers efficiently and maintain historical records for future analysis.
+
+To complete this project, several requirements are needed. First, a dataset containing electrical parameters and theft labels is required. Second, knowledge of Python, machine learning, and data preprocessing is necessary. Third, frontend development skills using React and backend development skills using FastAPI are required. Finally, a MySQL database and deployment platform are needed to host the application.
+
+The project development process includes data collection, data preprocessing, model training, model evaluation, backend development, frontend development, database integration, testing, and deployment.
+
+The final outcome is a smart AI-powered system that helps electricity providers identify power theft quickly, reduce manual inspections, improve operational efficiency, and minimize revenue losses.
+
+Thank you.
