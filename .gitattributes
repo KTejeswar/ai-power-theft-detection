@@ -1,0 +1,23 @@
+# Handle line endings automatically for all text files
+* text=auto
+
+# Enforce LF (Unix) line endings in Git for code and text files
+*.py text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Protect binary files from line ending conversions (prevents corruption)
+*.joblib binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
