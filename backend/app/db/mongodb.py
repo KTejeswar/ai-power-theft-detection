@@ -1,11 +1,12 @@
 import logging
+import certifi
 from pymongo import MongoClient, ASCENDING
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Initialize a global client
-client = MongoClient(settings.MONGO_URI)
+# Initialize a global client with certifi CA bundle to resolve SSL handshake failures on cloud servers
+client = MongoClient(settings.MONGO_URI, tlsCAFile=certifi.where())
 db = client[settings.DATABASE_NAME]
 
 def get_database():
