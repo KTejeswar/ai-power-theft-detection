@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldAlert, BarChart3, Users, BellRing, LogOut, Terminal } from 'lucide-react';
+import { ShieldAlert, BarChart3, Users, BellRing, LogOut, Terminal, PlayCircle, Cpu, Sun, Moon } from 'lucide-react';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import ConsumerList from './components/ConsumerList';
 import AlertsPanel from './components/AlertsPanel';
+import TelemetrySimulator from './components/TelemetrySimulator';
+import IotTopology from './components/IotTopology';
+import LegalReport from './components/LegalReport';
 import { authAPI, consumerAPI, alertAPI, readingsAPI } from './api';
 
 export default function App() {
@@ -11,12 +14,25 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loadingUser, setLoadingUser] = useState(true);
+  
+  // Theme and Report States
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [selectedAlertForReport, setSelectedAlertForReport] = useState(null);
 
   // Global database states
   const [consumers, setConsumers] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [readings, setReadings] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
+
+  // Apply dark mode class to document root
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   const checkAuth = async () => {
     setLoadingUser(true);
@@ -80,7 +96,7 @@ export default function App() {
 
   if (loadingUser) {
     return (
-      <div className="min-h-screen bg-[#0B0F19] flex items-center justify-center">
+      <div className="min-h-screen bg-brand-dark flex items-center justify-center">
         <div className="flex flex-col items-center space-y-4">
           <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-gray-400 text-sm">Validating system keys...</p>
@@ -94,9 +110,9 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-gray-100 flex flex-col">
+    <div className="min-h-screen bg-brand-dark flex flex-col transition-colors duration-200">
       {/* Top Navigation Bar */}
-      <header className="bg-brand-card/90 border-b border-brand-border px-6 py-4 flex justify-between items-center z-20 sticky top-0 backdrop-blur-md">
+      <header className="bg-brand-card/90 border-b border-brand-border px-6 py-4 flex justify-between items-center z-20 sticky top-0 backdrop-blur-md print:hidden">
         <div className="flex items-center space-x-3">
           <div className="p-2 bg-blue-500/10 border border-blue-500/30 rounded-lg">
             <ShieldAlert className="w-5 h-5 text-blue-400" />
@@ -108,11 +124,13 @@ export default function App() {
         </div>
 
         {/* Tab Controls */}
-        <nav className="hidden md:flex space-x-2">
+        <nav className="hidden lg:flex space-x-2">
           {[
             { id: 'dashboard', label: 'Dashboard Control', icon: BarChart3 },
             { id: 'consumers', label: 'Consumer Nodes', icon: Users },
-            { id: 'alerts', label: 'Incident Alarms', icon: BellRing }
+            { id: 'alerts', label: 'Incident Alarms', icon: BellRing },
+            { id: 'simulator', label: 'Live Simulator', icon: PlayCircle },
+            { id: 'iot', label: 'IoT Topology', icon: Cpu }
           ].map((tab) => {
             const Icon = tab.icon;
             return (
@@ -132,8 +150,17 @@ export default function App() {
           })}
         </nav>
 
-        {/* Operator Profile and Logout */}
+        {/* Operator Profile, Theme & Logout */}
         <div className="flex items-center space-x-4">
+          {/* Light/Dark mode switcher */}
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="p-2 hover:bg-brand-border/60 text-gray-400 hover:text-white border border-brand-border rounded-lg transition-colors"
+            title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-blue-400" />}
+          </button>
+
           <div className="hidden sm:block text-right">
             <p className="text-xs font-semibold text-white">{currentUser?.username}</p>
             <p className="text-[10px] text-gray-400 capitalize">{currentUser?.role}</p>
@@ -148,20 +175,22 @@ export default function App() {
         </div>
       </header>
 
-      {/* Sub-Navigation for Mobile view */}
-      <div className="md:hidden flex justify-around bg-brand-card border-b border-brand-border p-2">
+      {/* Sub-Navigation for Mobile/Tablet view */}
+      <div className="lg:hidden flex justify-around bg-brand-card border-b border-brand-border p-2 print:hidden overflow-x-auto">
         {[
           { id: 'dashboard', icon: BarChart3, label: 'Dashboard' },
           { id: 'consumers', icon: Users, label: 'Registry' },
-          { id: 'alerts', icon: BellRing, label: 'Alarms' }
+          { id: 'alerts', icon: BellRing, label: 'Alarms' },
+          { id: 'simulator', icon: PlayCircle, label: 'Simulator' },
+          { id: 'iot', icon: Cpu, label: 'IoT Status' }
         ].map((tab) => {
           const Icon = tab.icon;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex flex-col items-center p-2 rounded-lg text-[9px] ${
-                activeTab === tab.id ? 'text-blue-400' : 'text-gray-500'
+              className={`flex flex-col items-center p-2 rounded-lg text-[9px] min-w-16 ${
+                activeTab === tab.id ? 'text-blue-400 font-bold' : 'text-gray-500'
               }`}
             >
               <Icon className="w-4.5 h-4.5 mb-1" />
@@ -172,11 +201,11 @@ export default function App() {
       </div>
 
       {/* Main Panel Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
-        <div className="flex justify-between items-center border-b border-brand-border/60 pb-4">
+      <main className="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6 print:p-0 print:max-w-none">
+        <div className="flex justify-between items-center border-b border-brand-border/60 pb-4 print:hidden">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-white capitalize">
-              {activeTab === 'dashboard' ? 'Overview' : activeTab}
+              {activeTab === 'dashboard' ? 'Overview' : activeTab.replace('-', ' ')}
             </h2>
             <p className="text-xs text-gray-400 mt-1">
               Active telemetry reporting from grid consumer monitors.
@@ -185,7 +214,7 @@ export default function App() {
           <button 
             onClick={fetchGridData}
             disabled={loadingData}
-            className="flex items-center space-x-1.5 px-3 py-1.5 bg-[#0E1524] border border-brand-border hover:border-blue-500/40 text-xs rounded-lg text-gray-400 hover:text-white transition-all"
+            className="flex items-center space-x-1.5 px-3 py-1.5 bg-brand-card border border-brand-border hover:border-blue-500/40 text-xs rounded-lg text-gray-400 hover:text-white transition-all"
           >
             <Terminal className="w-3.5 h-3.5" />
             <span>{loadingData ? 'Updating...' : 'Sync Now'}</span>
@@ -213,16 +242,41 @@ export default function App() {
           <AlertsPanel 
             alerts={alerts} 
             onAlertResolved={fetchGridData} 
+            onViewReport={(alert) => {
+              setSelectedAlertForReport(alert);
+              setActiveTab('legal-report');
+            }}
             currentUser={currentUser} 
             loading={loadingData}
+          />
+        )}
+
+        {activeTab === 'simulator' && (
+          <TelemetrySimulator 
+            consumers={consumers} 
+            onSimulationComplete={fetchGridData}
+          />
+        )}
+
+        {activeTab === 'iot' && (
+          <IotTopology />
+        )}
+
+        {activeTab === 'legal-report' && (
+          <LegalReport 
+            alert={selectedAlertForReport}
+            consumers={consumers}
+            readings={readings}
+            onBack={() => setActiveTab('alerts')}
           />
         )}
       </main>
 
       {/* Footer */}
-      <footer className="bg-brand-card/50 border-t border-brand-border text-center py-4 text-[10px] text-gray-500">
+      <footer className="bg-brand-card/50 border-t border-brand-border text-center py-4 text-[10px] text-gray-500 print:hidden">
         GridGuardian Core v1.0.0 © 2026. Security systems powered by XGBoost.
       </footer>
     </div>
   );
 }
+

@@ -8,9 +8,9 @@ export default {
     extend: {
       colors: {
         brand: {
-          dark: '#0B0F19',
-          card: '#151C2C',
-          border: '#222F43',
+          dark: 'var(--bg-color)',
+          card: 'var(--card-bg)',
+          border: 'var(--card-border)',
           glow: '#3B82F6'
         }
       },
@@ -21,3 +21,4 @@ export default {
   },
   plugins: [],
 }
+
