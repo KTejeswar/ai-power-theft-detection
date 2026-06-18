@@ -21,3 +21,7 @@
 *.gif binary
 *.ico binary
 *.pdf binary
+
+# Exclude frontend JavaScript files from GitHub language statistics
+frontend/** linguist-vendored
+
