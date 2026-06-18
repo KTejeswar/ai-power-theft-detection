@@ -5,8 +5,13 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Initialize a global client with certifi CA bundle to resolve SSL handshake failures on cloud servers
-client = MongoClient(settings.MONGO_URI, tlsCAFile=certifi.where())
+# Initialize a global client with SSL bypass flags to resolve TLS handshake alerts on Render
+client = MongoClient(
+    settings.MONGO_URI, 
+    tls=True, 
+    tlsAllowInvalidCertificates=True,
+    tlsCAFile=certifi.where()
+)
 db = client[settings.DATABASE_NAME]
 
 def get_database():
