@@ -83,21 +83,22 @@ export default function IotTopology() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
               <div className="p-3 bg-[#0E1524] rounded-lg border border-brand-border">
                 <span className="text-blue-400 font-bold">1. RMS Current Calibration</span>
-                <p className="text-[10px] text-gray-400 mt-1.5 leading-relaxed">
+                <p className="text-[10px] text-gray-400 mt-1.5 leading-relaxed font-sans">
                   The SCT-013 CT sensor outputs a small current. Using a burden resistor (e.g. 22 Ω), this is converted to a voltage:
-                  <code className="block text-emerald-400 mt-1 bg-brand-card/50 p-1.5 rounded">$I_{RMS} = ADC_{value} \times (V_{REF}/4096) / R_{Burden} \times N_{Turns}$</code>
+                  <code className="block text-emerald-400 mt-1 bg-brand-card/50 p-1.5 rounded">{"I_RMS = ADC_value * (V_REF / 4096) / R_Burden * N_Turns"}</code>
                 </p>
               </div>
 
               <div className="p-3 bg-[#0E1524] rounded-lg border border-brand-border">
                 <span className="text-blue-400 font-bold">2. RMS Voltage Calibration</span>
-                <p className="text-[10px] text-gray-400 mt-1.5 leading-relaxed">
+                <p className="text-[10px] text-gray-400 mt-1.5 leading-relaxed font-sans">
                   ZMPT101B uses a micro voltage transformer. The phase-shifted sine wave is sampled over a 50Hz cycle:
-                  <code className="block text-emerald-400 mt-1 bg-brand-card/50 p-1.5 rounded">$V_{RMS} = \sqrt{\frac{1}{N}\sum(ADC_{v} - V_{offset})^2} \times Scale_{Multiplier}$</code>
+                  <code className="block text-emerald-400 mt-1 bg-brand-card/50 p-1.5 rounded">{"V_RMS = sqrt( (1 / N) * sum( (ADC_v - V_offset)^2 ) ) * Scale_Multiplier"}</code>
                 </p>
               </div>
             </div>
           </div>
+
         </div>
 
         {/* JSON API and Specs */}
