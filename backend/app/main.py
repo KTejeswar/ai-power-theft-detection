@@ -58,5 +58,10 @@ app.include_router(readings.router)
 app.include_router(alerts.router)
 
 if __name__ == "__main__":
-    # Run server locally on configurable port
-    uvicorn.run("app.main:app", host="0.0.0.0", port=settings.PORT, reload=True)
+    import os
+    # Prioritize OS PORT env var (injected by Render) and fallback to settings.PORT
+    port = int(os.environ.get("PORT", settings.PORT))
+    logger.info(f"Starting uvicorn server on host 0.0.0.0 and port {port}")
+    # Run server locally on configurable port (disable reload in production for stability)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=False)
+

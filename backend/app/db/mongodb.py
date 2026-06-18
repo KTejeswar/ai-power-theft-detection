@@ -5,14 +5,19 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Initialize a global client with SSL bypass flags to resolve TLS handshake alerts on Render
-client = MongoClient(
-    settings.MONGO_URI, 
-    tls=True, 
-    tlsAllowInvalidCertificates=True,
-    tlsCAFile=certifi.where()
-)
+# Determine Mongo connection options dynamically (Atlas/SSL vs Local)
+mongo_kwargs = {}
+uri_lower = settings.MONGO_URI.lower()
+if settings.MONGO_URI.startswith("mongodb+srv://") or "replicaset" in uri_lower or "ssl=true" in uri_lower or "tls=true" in uri_lower:
+    mongo_kwargs["tls"] = True
+    mongo_kwargs["tlsAllowInvalidCertificates"] = True
+    mongo_kwargs["tlsCAFile"] = certifi.where()
+else:
+    mongo_kwargs["tls"] = False
+
+client = MongoClient(settings.MONGO_URI, **mongo_kwargs)
 db = client[settings.DATABASE_NAME]
+
 
 def get_database():
     """Dependency helper to get database instance."""
